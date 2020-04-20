@@ -1,0 +1,142 @@
+* {
+  box-sizing: border-box;
+}
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 10px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+html{
+  background-color: black;
+
+}
+.App {
+  text-align: center;
+  margin: 5vmin;
+}
+
+h2{
+  color: white;
+  font-size: 3vmin;
+  font-family: 'Mukta', sans-serif;
+  font-weight: 100;
+  letter-spacing: 0.05em;
+
+}
+p{
+  color: white;
+  font-size: 2.2vmin;
+  font-family: 'Mukta', sans-serif;
+  font-weight: 100;
+  letter-spacing: 0.05em;
+
+}
+
+.Logo {
+  height: 15vmin;
+  pointer-events: none;
+}
+
+.Intro{
+ margin: 8vmin 10vmin 5vmin 10vmin;
+}
+
+.button{
+  color: white;
+  background-color: black; 
+  border: 2px solid white;
+  border-radius: 12px;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 2vmin;
+  margin: 4vmin;
+  font-family: 'Mukta', sans-serif;
+  font-weight: 100;
+  letter-spacing: 0.05em;
+
+}
+.button:focus{
+  outline: none;
+  color: black;
+  background-color: #BC6AF5; 
+  border:  2px solid #BC6AF5;
+}
+.button:hover{
+  outline: none;
+  color: black;
+  background-color: #7FD4C8; 
+  border:  2px solid #7FD4C8;  }
+
+#btn{
+  padding: 20px 20px;
+}
+#btn2{
+  padding: 10px 20px;
+}
+
+#random{
+  color: white;
+  background-color: black; 
+  border: 2px solid white;
+  border-radius: 12px;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 2vmin;
+  margin: 0vmin 0vmin 8vmin 0vmin;
+  font-family: 'Mukta', sans-serif;
+  font-weight: 100;
+  letter-spacing: 0.05em;
+}
+#random:active{
+  outline: none;
+}
+
+#random:hover{
+  outline: none;
+}
+
+#random:focus{
+  outline: none;
+}
+
+
+#picker{
+  color: white;
+  background-color: rgb(255, 255, 255,0.7); 
+  border: 0.5px solid rgb(0, 0, 0,0.5);
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.5vmin;
+  font-family: 'Mukta', sans-serif;
+  font-weight: 100;
+  letter-spacing: 0.05em;
+  color:black;
+}
+#picker:hover{
+  outline: none;
+  color: black;
+  background-color: #BC6AF5; 
+}
+#picker:focus{
+  outline: none;
+  color: black;
+  background-color: #7FD4C8; 
+   }
+
+  #picker:active{
+    outline: none;
+    color: black;
+    background-color: #7FD4C8; 
+  }
