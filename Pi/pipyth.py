@@ -2,42 +2,40 @@ import numpy as np
 import alsaaudio as aa
 import wave
 from struct import unpack
-import time
-import sys
-import random
 import pygame.midi
 import audioop
 from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
-from PIL import Image
 import glob
 from osc4py3.as_eventloop import *
 from osc4py3 import oscbuildparse
 
-
+#creating global variables
 spectrum  = [1,1,1,3,3,3,2,2]
 matrix    = [0]*16
 power     = []
 weighting = [8,32,32,32]+[64]*12
 checker = 0;
 loops = [0]*37
+#Reading all sound files in a folder
 string = glob.glob('/home/pi/Public/project/sounds/5/*.wav')
 for i in range(37):
     path = string[i]
     loops[i] = wave.open(path,'r')
 
-wavfile = wave.open('/home/pi/Public/project/frizzybeatz/f0.wav','r')
+    
+#Getting sample rate, number of channels and amount of chunks (picking first file, because all of the files have the same attributes
 sample_rate = loops[0].getframerate()
 no_channels = loops[0].getnchannels()
 chunk       = 1024 # Use a multiple of 8
 
-
+#Setting up audio output (number of channels, sound card, sample rate etc...)
 output = aa.PCM(aa.PCM_PLAYBACK, aa.PCM_NORMAL)
 output.setchannels(no_channels)
 output.setrate(sample_rate)
 output.setformat(aa.PCM_FORMAT_S16_LE)
 output.setperiodsize(chunk)
 
-
+#setting up RGB metrices
 options = RGBMatrixOptions()
 options.rows = 32
 options.chain_length = 3
@@ -54,7 +52,7 @@ nOfK = 0
 
 plusminus = 0
 increment = 0
-
+#this function lights up metrices. First "for" goes 16 times for each bar and 6 times for each column in a bar
 def bars(matrix):
     if nOfK !=0:
         for i in range(16):
@@ -65,6 +63,7 @@ def bars(matrix):
     else:
         for i in range(96):
                 graphics.DrawLine(matrixL,0+i,32,0+i,0,black)
+#Changing colour when lowest bar hits certain aplitude level
 def colorChanger(beat):
     global plusminus
     global green
@@ -83,6 +82,8 @@ def colorChanger(beat):
         green = graphics.Color(117,250,239)
 def piff(val):
    return int(2*chunk*val/sample_rate)
+
+#This function does all the "hard calculations". Converts bytes of sound chunks to numbers and then does FFT. Result is sent to the metrices and to the client side
 def calculate_levels(data, chunk,sample_rate):
        global matrix
        # Convert raw data (ASCII string) to numpy array
@@ -120,6 +121,7 @@ def calculate_levels(data, chunk,sample_rate):
        bars(matrix)
        return matrix
 
+    #This function adds together chunks of audio and sends it to the output. Looks complicated only because to be able to add two chunks together, they need to be the same lenght. Most of this code is error handling and checking which chunk is shorter and if it is, reset the sound file to the beginning 
 def soundTrigger():
     if nOfK == 1:
         data = loops[vals[0]].readframes(chunk)
@@ -202,6 +204,9 @@ def soundTrigger():
                 break
         output.write(data)
     return data
+
+
+#Reading input from midi keyboard and sorting out the signal
 def readInput(input_device):
     if input_device.poll():
         event = input_device.read(1)
@@ -219,7 +224,7 @@ def readInput(input_device):
             vals.remove(key-48)
             vals.sort(reverse=True)
             nOfK-=1
-
+#This function sends analysed data from our sounds to the client side using OSC
 def send(value):
     value =value.tolist()
     #value.insert(0,"bars")
@@ -234,11 +239,11 @@ osc_startup()
 # Make client channels to send packets.
 osc_udp_client("192.168.0.7", 7500, "aclientname")
 
-my_input = pygame.midi.Input(3) #only in my case the id is 2
+my_input = pygame.midi.Input(3)
 while True:
     if __name__ == '__main__':
-        readInput(my_input)
-    if nOfK >0 and nOfK <=4:
+        readInput(my_input) #read input from keyboard
+    if nOfK >0 and nOfK <=4: #if user holds 1-4 keys, play sounds and analyse them
         mData = soundTrigger()
         matrix=calculate_levels(mData, chunk,sample_rate)
-    else: bars(matrix)
+    else: bars(matrix) #if not, reset the metrix to default
